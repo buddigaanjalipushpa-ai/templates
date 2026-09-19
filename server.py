@@ -1,4 +1,5 @@
-from flask import Flask, request, redirect, render_template
+
+from flask import Flask, request, redirect, render_template, send_from_directory
 import sqlite3
 import os
 
@@ -15,6 +16,16 @@ app = Flask(
     __name__,
     template_folder=TEMPLATE_FOLDER
 )
+
+
+# =========================================================
+# STATIC FILES
+# =========================================================
+
+@app.route("/static/<path:filename>")
+def static_files(filename):
+
+    return send_from_directory(BASE_DIR, filename)
 
 
 # =========================================================
@@ -79,13 +90,24 @@ def create_database():
 
 
 # =========================================================
-# HOME PAGE
+# FIRST PAGE
 # =========================================================
 
 @app.route("/")
-def home():
+def welcome():
 
-   return render_template("home.html")
+    return render_template("welcome.html")
+
+
+# =========================================================
+# HOME PAGE
+# =========================================================
+
+@app.route("/home")
+def home_page():
+
+    return render_template("home.html")
+
 
 # =========================================================
 # REGISTER PAGE
@@ -108,7 +130,9 @@ def register():
     username = request.form.get("username")
     password = request.form.get("password")
 
-    # Check empty fields
+    # -----------------------------------------------------
+    # CHECK EMPTY FIELDS
+    # -----------------------------------------------------
 
     if not fullname or not username or not password:
 
@@ -158,6 +182,7 @@ def register():
 
     connection.close()
 
+    # After registration go to login page
     return redirect("/login")
 
 
@@ -195,37 +220,17 @@ def login():
 
     connection.close()
 
+    # -----------------------------------------------------
+    # LOGIN SUCCESS
+    # -----------------------------------------------------
+
     if user:
 
-        return f"""
-        <h2>Login successful!</h2>
+        return redirect("/home")
 
-        <p>Welcome, {username}!</p>
-
-        <br>
-
-        <a href="/">
-            Home
-        </a>
-
-        <br><br>
-
-        <a href="/employees">
-            View Employees
-        </a>
-
-        <br><br>
-
-        <a href="/add-employee">
-            Add Employee
-        </a>
-
-        <br><br>
-
-        <a href="/search">
-            Search Employee
-        </a>
-        """
+    # -----------------------------------------------------
+    # LOGIN FAILED
+    # -----------------------------------------------------
 
     else:
 
@@ -267,7 +272,9 @@ def add_employee():
     joining_date = request.form.get("joining_date")
     address = request.form.get("address", "")
 
-    # Check required fields
+    # -----------------------------------------------------
+    # CHECK REQUIRED FIELDS
+    # -----------------------------------------------------
 
     if (
         not name
@@ -328,20 +335,44 @@ def add_employee():
 @app.route("/employees")
 def employees():
 
+    search = request.args.get("search")
+
     connection = get_db_connection()
 
-    employee_list = connection.execute("""
-        SELECT *
-        FROM employees
-        ORDER BY id ASC
-    """).fetchall()
+    # -----------------------------------------------------
+    # SEARCH EMPLOYEE
+    # -----------------------------------------------------
+
+    if search:
+
+        employee_list = connection.execute("""
+            SELECT *
+            FROM employees
+            WHERE name LIKE ?
+            OR email LIKE ?
+            OR phone LIKE ?
+            OR department LIKE ?
+            ORDER BY id ASC
+        """, (
+            f"%{search}%",
+            f"%{search}%",
+            f"%{search}%",
+            f"%{search}%"
+        )).fetchall()
+
+    # -----------------------------------------------------
+    # SHOW ALL EMPLOYEES
+    # -----------------------------------------------------
+
+    else:
+
+        employee_list = connection.execute("""
+            SELECT *
+            FROM employees
+            ORDER BY id ASC
+        """).fetchall()
 
     connection.close()
-
-    print(
-        "Number of employees:",
-        len(employee_list)
-    )
 
     return render_template(
         "employee.html",
@@ -366,7 +397,9 @@ def edit_employee_page(id):
 
     connection.close()
 
-    # Employee not found
+    # -----------------------------------------------------
+    # EMPLOYEE NOT FOUND
+    # -----------------------------------------------------
 
     if employee is None:
 
@@ -401,7 +434,9 @@ def update_employee(id):
     joining_date = request.form.get("joining_date")
     address = request.form.get("address", "")
 
-    # Check required fields
+    # -----------------------------------------------------
+    # CHECK REQUIRED FIELDS
+    # -----------------------------------------------------
 
     if (
         not name
@@ -448,6 +483,13 @@ def update_employee(id):
 
     connection.commit()
 
+    connection.close()
+
+    print("Employee updated:", id)
+
+    return redirect("/employees")
+
+
 # =========================================================
 # DELETE EMPLOYEE
 # =========================================================
@@ -457,7 +499,10 @@ def delete_employee(id):
 
     connection = get_db_connection()
 
-    # Delete selected employee
+    # -----------------------------------------------------
+    # DELETE SELECTED EMPLOYEE
+    # -----------------------------------------------------
+
     connection.execute("""
         DELETE FROM employees
         WHERE id = ?
@@ -465,15 +510,20 @@ def delete_employee(id):
 
     connection.commit()
 
-    # Get all remaining employees in their current order
+    # -----------------------------------------------------
+    # GET REMAINING EMPLOYEES
+    # -----------------------------------------------------
+
     employees = connection.execute("""
         SELECT id
         FROM employees
         ORDER BY id ASC
     """).fetchall()
 
-    # Temporarily change IDs to negative values
-    # This prevents PRIMARY KEY conflicts
+    # -----------------------------------------------------
+    # TEMPORARILY CHANGE IDs TO NEGATIVE
+    # -----------------------------------------------------
+
     for employee in employees:
 
         old_id = employee["id"]
@@ -489,14 +539,20 @@ def delete_employee(id):
 
     connection.commit()
 
-    # Get the employees again
+    # -----------------------------------------------------
+    # GET EMPLOYEES AGAIN
+    # -----------------------------------------------------
+
     employees = connection.execute("""
         SELECT id
         FROM employees
         ORDER BY id DESC
     """).fetchall()
 
-    # Assign continuous IDs: 1, 2, 3, 4...
+    # -----------------------------------------------------
+    # ASSIGN CONTINUOUS IDs
+    # -----------------------------------------------------
+
     for index, employee in enumerate(employees, start=1):
 
         connection.execute("""
@@ -510,13 +566,17 @@ def delete_employee(id):
 
     connection.commit()
 
-    # Reset AUTOINCREMENT
+    # -----------------------------------------------------
+    # RESET AUTOINCREMENT
+    # -----------------------------------------------------
+
     max_id = connection.execute("""
         SELECT MAX(id)
         FROM employees
     """).fetchone()[0]
 
     if max_id is None:
+
         max_id = 0
 
     connection.execute("""
@@ -525,96 +585,25 @@ def delete_employee(id):
     """)
 
     connection.execute("""
-        INSERT INTO sqlite_sequence (name, seq)
-        VALUES ('employees', ?)
+        INSERT INTO sqlite_sequence
+        (
+            name,
+            seq
+        )
+        VALUES
+        (
+            'employees',
+            ?
+        )
     """, (max_id,))
 
     connection.commit()
+
     connection.close()
 
     print("Employee deleted:", id)
 
     return redirect("/employees")
-
-
-# =========================================================
-# SEARCH PAGE - GET
-# =========================================================
-
-@app.route("/search")
-def search_page():
-
-    return render_template(
-        "search.html",
-        employees=None,
-        search_text=""
-    )
-
-
-# =========================================================
-# SEARCH EMPLOYEES - POST
-# =========================================================
-
-@app.route("/search", methods=["POST"])
-def search_employee():
-
-    search_text = request.form.get(
-        "search",
-        ""
-    ).strip()
-
-    connection = get_db_connection()
-
-    # -----------------------------------------------------
-    # EMPTY SEARCH - SHOW ALL EMPLOYEES
-    # -----------------------------------------------------
-
-    if search_text == "":
-
-        employee_list = connection.execute("""
-            SELECT *
-            FROM employees
-            ORDER BY id ASC
-        """).fetchall()
-
-    # -----------------------------------------------------
-    # SEARCH EMPLOYEES
-    # -----------------------------------------------------
-
-    else:
-
-        employee_list = connection.execute("""
-            SELECT *
-            FROM employees
-            WHERE name LIKE ?
-               OR email LIKE ?
-               OR phone LIKE ?
-               OR department LIKE ?
-            ORDER BY id ASC
-        """, (
-            "%" + search_text + "%",
-            "%" + search_text + "%",
-            "%" + search_text + "%",
-            "%" + search_text + "%"
-        )).fetchall()
-
-    connection.close()
-
-    print(
-        "Search:",
-        search_text
-    )
-
-    print(
-        "Results:",
-        len(employee_list)
-    )
-
-    return render_template(
-        "search.html",
-        employees=employee_list,
-        search_text=search_text
-    )
 
 
 # =========================================================
@@ -624,5 +613,4 @@ def search_employee():
 if __name__ == "__main__":
 
     create_database()
-
     app.run(debug=True)

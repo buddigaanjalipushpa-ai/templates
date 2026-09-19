@@ -1,10 +1,15 @@
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="/static/theme.css">
+    <script src="/static/theme.js" defer></script>
+    
     <title>Login - Employee Management System</title>
+
     <style>
         * {
             box-sizing: border-box;
@@ -12,11 +17,13 @@
             padding: 0;
             font-family: Arial, sans-serif;
         }
+
         body {
             background: #f4f7f9;
             color: #333;
             min-height: 100vh;
         }
+
         /* Navbar */
         nav {
             background: #222;
@@ -26,24 +33,29 @@
             justify-content: space-between;
             align-items: center;
         }
+
         .logo {
             font-size: 22px;
             font-weight: bold;
             color: #00bcd4;
         }
+
         .nav-links {
             display: flex;
             gap: 25px;
         }
+
         .nav-links a {
             color: white;
             text-decoration: none;
             font-size: 15px;
             transition: 0.3s;
         }
+
         .nav-links a:hover {
             color: #00bcd4;
         }
+
         /* Login Section */
         .login-container {
             min-height: calc(100vh - 70px);
@@ -52,6 +64,7 @@
             align-items: center;
             padding: 30px 15px;
         }
+
         .login-card {
             background: white;
             width: 100%;
@@ -60,27 +73,32 @@
             border-radius: 12px;
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.12);
         }
+
         .login-card h2 {
             text-align: center;
             margin-bottom: 10px;
             color: #222;
         }
+
         .subtitle {
             text-align: center;
             color: #777;
             margin-bottom: 30px;
             font-size: 14px;
         }
+
         /* Form */
         .form-group {
             margin-bottom: 20px;
         }
+
         label {
             display: block;
             margin-bottom: 8px;
             font-weight: bold;
             color: #444;
         }
+
         input[type="text"],
         input[type="password"] {
             width: 100%;
@@ -91,11 +109,13 @@
             outline: none;
             transition: 0.3s;
         }
+
         input[type="text"]:focus,
         input[type="password"]:focus {
             border-color: #00bcd4;
             box-shadow: 0 0 5px rgba(0, 188, 212, 0.25);
         }
+
         /* Login Button */
         .login-btn {
             width: 100%;
@@ -109,9 +129,11 @@
             cursor: pointer;
             transition: 0.3s;
         }
+
         .login-btn:hover {
             background: #0097a7;
         }
+
         /* Register Link */
         .register-link {
             text-align: center;
@@ -119,70 +141,102 @@
             font-size: 14px;
             color: #666;
         }
+
         .register-link a {
             color: #00a6bd;
             text-decoration: none;
             font-weight: bold;
         }
+
         .register-link a:hover {
             text-decoration: underline;
         }
+
         /* Mobile */
         @media (max-width: 600px) {
             nav {
                 padding: 15px 20px;
             }
+
             .logo {
                 font-size: 18px;
             }
+
             .nav-links {
                 gap: 12px;
             }
+
             .nav-links a {
                 font-size: 13px;
             }
+
             .login-card {
                 padding: 30px 20px;
             }
         }
     </style>
 </head>
+
 <body>
+
     <!-- Navbar -->
     <nav>
         <div class="logo">
             Employee Management System
         </div>
+
         <div class="nav-links">
             <a href="/">Home</a>
             <a href="/register">Register</a>
+
+        <button id="themeBtn" class="theme-btn" onclick="toggleTheme()">
+              🌙 Dark
+        </button>
+
+        
         </div>
     </nav>
+
     <!-- Login Form -->
     <div class="login-container">
+
         <div class="login-card">
+
             <h2>Welcome Back</h2>
+
             <p class="subtitle">
                 Login to your Employee Management System
             </p>
+
             <form action="/login" method="post">
+
                 <div class="form-group">
                     <label for="username">Username</label>
+
                     <input type="text" id="username" name="username" placeholder="Enter your username" required>
                 </div>
+
                 <div class="form-group">
                     <label for="password">Password</label>
+
                     <input type="password" id="password" name="password" placeholder="Enter your password" required>
                 </div>
+
                 <button type="submit" class="login-btn">
                     Login
                 </button>
+
             </form>
+
             <div class="register-link">
                 Don't have an account?
                 <a href="/register">Create an account</a>
             </div>
+
         </div>
+
     </div>
+
 </body>
+
 </html>

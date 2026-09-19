@@ -8,6 +8,9 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
 
+    <link rel="stylesheet" href="/static/theme.css">
+    <script src="/static/theme.js" defer></script>
+
     <title>Register - Employee Management System</title>
 
     <style>
@@ -79,7 +82,8 @@
             border-radius: 10px;
             box-shadow: 0 2px 15px rgba(0, 0, 0, 0.12);
         }
-         .register-container h2 {
+
+        .register-container h2 {
             text-align: center;
             color: #222;
             margin-bottom: 10px;
@@ -164,7 +168,7 @@
 
         /* ================= LOGIN LINK ================= */
 
- .login-text {
+        .login-text {
             text-align: center;
             margin-top: 25px;
             color: #777;
@@ -237,6 +241,11 @@
                     Login
                 </a>
             </li>
+            <li>
+    <button id="themeBtn" class="theme-btn" onclick="toggleTheme()">
+        🌙 Dark
+    </button>
+</li>
 
         </ul>
 
@@ -315,7 +324,6 @@
 
 
             <!-- BUTTONS -->
-                <!-- BUTTONS -->
 
             <div class="button-group">
 
@@ -335,7 +343,8 @@
 
                 </button>
 
-</div>
+
+            </div>
 
 
         </form>

@@ -7,6 +7,9 @@
 
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" href="/static/theme.css">
+    <script src="/static/theme.js" defer></script>
 
     <title>Edit Employee</title>
 
@@ -66,7 +69,7 @@
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-              }
+        }
 
         h1 {
             text-align: center;
@@ -133,7 +136,7 @@
 <body>
 
 
-  <!-- ================= NAVBAR ================= -->
+    <!-- ================= NAVBAR ================= -->
 
     <nav class="navbar">
 
@@ -168,6 +171,11 @@
                 <a href="/search">
                     Search
                 </a>
+            </li>
+            <li>
+                <button id="themeBtn" class="theme-btn" onclick="toggleTheme()">
+                    🌙 Dark
+                </button>
             </li>
 
         </ul>
@@ -304,7 +312,7 @@
         </form>
 
 
-  <a href="/employees"
+        <a href="/employees"
            class="back-btn">
 
             ← Back to Employees

@@ -7,6 +7,9 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <link rel="stylesheet" href="/static/theme.css">
+    <script src="/static/theme.js" defer></script>
+
     <title>Add Employee</title>
 
     <style>
@@ -351,6 +354,9 @@
 
 
 <body>
+
+    <!-- ================= NAVBAR ================= -->
+
     <nav class="navbar">
 
         <div class="logo">
@@ -368,6 +374,19 @@
                 </a>
             </li>
 
+            <li>
+                <a href="/employees">
+                    Employees
+                </a>
+            </li>
+            
+            <li>
+            <button id="themeBtn"
+                    class="theme-btn"
+                    onclick="toggleTheme()">
+                🌙 Dark
+            </button>
+</li>
 
         </ul>
 
@@ -443,6 +462,7 @@
                     <label for="department">
 
                         Department
+
 
                     </label>
 

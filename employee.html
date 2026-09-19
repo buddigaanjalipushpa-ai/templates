@@ -8,6 +8,9 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
 
+    <link rel="stylesheet" href="/static/theme.css">
+    <script src="/static/theme.js" defer></script>
+
     <title>Employees</title>
 
     <style>
@@ -22,6 +25,35 @@
             font-family: Arial, sans-serif;
             background-color: #f5f5f5;
         }
+
+        /* ===== SEARCH BAR ===== */
+
+.search-form{
+    display:flex;
+    gap:10px;
+    margin-bottom:20px;
+}
+
+.search-form input{
+    flex:1;
+    padding:12px;
+    border:1px solid #ccc;
+    border-radius:6px;
+    font-size:15px;
+}
+
+.search-btn{
+    background:#00bcd4;
+    color:white;
+    border:none;
+    padding:12px 20px;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+.search-btn:hover{
+    background:#0097a7;
+}
 
         /* ================= NAVBAR ================= */
 
@@ -181,7 +213,8 @@
     <nav class="navbar">
 
         <div class="logo">
-             Employee Management System
+
+            Employee Management System
 
         </div>
 
@@ -207,12 +240,6 @@
             </li>
 
             <li>
-                <a href="/search">
-                    Search
-                </a>
-            </li>
-
-            <li>
                 <a href="/login"
                    class="login-btn">
                     Login
@@ -224,6 +251,13 @@
                    class="register-btn">
                     Register
                 </a>
+            </li>
+            <li>
+            <button id="themeBtn"
+                    class="theme-btn"
+                    onclick="toggleTheme()">
+                🌙 Dark
+             </button>
             </li>
 
         </ul>
@@ -239,6 +273,20 @@
             Employee Information
         </h1>
 
+        <form action="/employees" method="GET" class="search-form">
+
+    <input
+        type="text"
+        name="search"
+        placeholder="Search by name, email, phone or department"
+        required>
+
+    <button type="submit" class="search-btn">
+        🔍 Search
+    </button>
+
+</form>
+
 
         <a href="/add-employee"
            class="add-btn">
@@ -249,7 +297,9 @@
 
 
         <div class="table-container">
-             {% if employees %}
+
+
+            {% if employees %}
 
 
             <table>
@@ -291,7 +341,7 @@
 
                         <td>
                             {{ employee['id'] }}
-                                </td>
+                        </td>
 
                         <td>
                             {{ employee['name'] }}
@@ -359,7 +409,7 @@
             {% else %}
 
 
- <div class="no-data">
+            <div class="no-data">
 
                 No employees found.
 
@@ -377,4 +427,3 @@
 </body>
 
 </html>
-    

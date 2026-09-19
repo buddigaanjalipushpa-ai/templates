@@ -7,9 +7,13 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <link rel="stylesheet" href="/static/theme.css">
+    <script src="/static/theme.js" defer></script>
+    
     <title>Employee Management System</title>
 
     <style>
+
         * {
             margin: 0;
             padding: 0;
@@ -263,6 +267,20 @@
             }
 
         }
+
+        .theme-btn{
+           background:#00bcd4;
+           color:white;
+           border:none;
+           padding:8px 12px;
+           border-radius:5px;
+           cursor:pointer;
+        }
+
+       .theme-btn:hover{
+           background:#0097a7;
+        }    
+
     </style>
 
 </head>
@@ -296,15 +314,18 @@
             </li>
 
             <li>
-                <a href="/search">Search</a>
-            </li>
-
-            <li>
                 <a href="/login" class="login-btn">Login</a>
             </li>
 
             <li>
                 <a href="/register" class="register-btn">Register</a>
+            </li>
+            <li>
+                <button id="themeBtn"
+                        class="theme-btn"
+                        onclick="toggleTheme()">
+                     🌙 Dark
+                </button>
             </li>
 
         </ul>
